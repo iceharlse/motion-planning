@@ -52,6 +52,7 @@ def calFitness(birdPop, Demand, dis_matrix, CAPACITY, DISTABCE, C0, C1):
     输出：birdPop_car-分车后路径,fits-适应度
     '''
     birdPop_car, fits = [], []  # 初始化
+
     for j in range(len(birdPop)):
         bird = birdPop[j]
         lines = []  # 存储线路分车
@@ -66,6 +67,7 @@ def calFitness(birdPop, Demand, dis_matrix, CAPACITY, DISTABCE, C0, C1):
                 d += Demand[bird[i]]  # 记录需求量
                 i += 1  # 指向下一个客户点
             else:  # 已分配客户点则需判断车辆载重和行驶距离
+                # 前往下一个地点后可以返回起点，容量也够
                 if (dis_matrix.loc[line[-1], bird[i]] + dis_matrix.loc[bird[i], 0] + dis <= DISTABCE) & (
                         d + Demand[bird[i]] <= CAPACITY):
                     dis += dis_matrix.loc[line[-1], bird[i]]
@@ -88,7 +90,7 @@ def calFitness(birdPop, Demand, dis_matrix, CAPACITY, DISTABCE, C0, C1):
         lines.append(line)
 
         birdPop_car.append(lines)
-        fits.append(round(C1 * dis_sum + C0 * len(lines), 1))
+        fits.append(round(C1 * dis_sum + C0 * len(lines), 1))  # 四舍五入保留1位小数
 
     return birdPop_car, fits
 
@@ -121,9 +123,8 @@ def crossover(bird, pLine, gLine, w, c1, c2):
     list2 = list(range(0, start_pos))
     list1 = list(range(end_pos + 1, len(parent2)))
     list_index = list1 + list2  # croBird从后往前填充
-    j = -1
     for i in list_index:
-        for j in range(j + 1, len(parent2) + 1):
+        for j in range(0, len(parent2)):
             if parent2[j] not in croBird:
                 croBird[i] = parent2[j]
                 break
@@ -178,7 +179,7 @@ if __name__ == '__main__':
                 (51, 71), (75, 83), (29, 32), (83, 3), (50, 93), (80, 94), (5, 42), (62, 70), (31, 62), (19, 97),
                 (91, 75), (27, 49), (23, 15), (20, 70), (85, 60), (98, 85)]
     Demand = [0, 16, 11, 6, 10, 7, 12, 16, 6, 16, 8, 14, 7, 16, 3, 22, 18, 19, 1, 14, 8, 12, 4, 8, 24, 24, 2, 10, 15, 2,
-              14, 9]  # 城市的标号
+              14, 9]  # 客户的需求
     dis_matrix = calDistance(Customer)  # 计算城市间距离，因为是整数规划，所以距离四舍五入取整
 
     birdPop = [greedy(Customer, dis_matrix) for i in range(birdNum)]  # 贪婪算法构造初始解
@@ -189,7 +190,6 @@ if __name__ == '__main__':
     gBest = pBest = min(fits)  # 全局最优值、当前最优值
     gLine = pLine = birdPop[fits.index(min(fits))]  # 全局最优解、当前最优解
     gLine_car = pLine_car = birdPop_car[fits.index(min(fits))]
-    bestfit.append(gBest)
 
     plot_x = []
     plot_y = []
@@ -202,10 +202,8 @@ if __name__ == '__main__':
         if min(fits) <= gBest:
             gBest, gLine, gLine_car = min(fits), birdPop[fits.index(min(fits))], birdPop_car[fits.index(min(fits))]
 
-        bestfit.append(gBest)
         print(iterI, gBest)  # 打印当前代数和最佳适应度值
         plot_x.append(iterI)
-        plot_y.append(gBest)
         iterI += 1  # 迭代计数加一
 
     print(gLine_car)  # 路径顺序
