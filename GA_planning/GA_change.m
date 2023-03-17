@@ -18,20 +18,20 @@ function [bestY,bestX,recording]=GA(x,y,option,data)
         for i=1:option.numAgent*2 % 抽去2N个父辈
             maxContestants=ceil(randi(option.numAgent)*option.p1_GA); % 本次竞标赛抽取的种群个数
             index=randperm(option.numAgent,maxContestants); % 原种群随机抽取父辈候选
-            [~,position]=min(y(index)); % 选择适应度最好的
+            [~,position]=min(y_p(index)); % 选择适应度最好的
             parent(i)=index(position(1)); % 加入父辈
         end
-        newX=x*0;
-        newY=y*0;
+        newX=x_p*0;
+        newY=y_p*0;
         %% 交叉变异
         for i=1:option.numAgent
-            newX(i,:)=x(parent(i),:);
+            newX(i,:)=x_p(parent(i),:);
             if rand<option.p1_GA %多点交叉
-                tempR=rand(size(x(i,:))); % 生成所有边的随机数
-                newX(i,tempR>0.5)=x(parent(i+option.numAgent),tempR>0.5); % 概率大于0.5的和另一个父辈交换边的概率权重
+                tempR=rand(size(x_p(i,:))); % 生成所有边的随机数
+                newX(i,tempR>0.5)=x_p(parent(i+option.numAgent),tempR>0.5); % 概率大于0.5的和另一个父辈交换边的概率权重
             end
             if rand<option.p2_GA %多点变异
-                tempR=rand(size(x(i,:)));
+                tempR=rand(size(x_p(i,:)));
                 temp=rand(size(option.lb)).*(option.ub-option.lb)+option.lb; % 重新生成每个边的随机权重
                 newX(i,tempR>0.5)=temp(tempR>0.5); % 变异
             end
@@ -54,7 +54,21 @@ function [bestY,bestX,recording]=GA(x,y,option,data)
                 end
             end
         end
+        
+        
+        % 给最佳适应度的一点小奖励
+        [~,find_fit] = min(y_p(:));
+        find_fit = find_fit(1);
+        x_p(find_fit,:) = x_p(find_fit,:) + 0.1;
+        x_p(i,:)=checkX(x_p(i,:),option,data);
  
+        % 给最差适应度一点专家策略
+        if mod(iter, 5) == 0
+            [~,find_fit] = max(y_p(:));
+            find_fit = find_fit(1);
+            x_p(find_fit,:) = RRT_initial(x_p(find_fit,:),option,data);
+        end
+        
         %% 更新记录
         recording.bestFit(1+iter)=y_g;
         recording.meanFit(1+iter)=mean(y_p);
