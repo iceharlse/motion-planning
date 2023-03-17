@@ -39,7 +39,7 @@ function isInObstacle = checkIfinObstacle(map,Point1,Point2) %´´½¨º¯ÊýisInObstac
     for i=1:length(node(:,1))
         no1=node(i,1);
         no2=node(i,2);
-        if map(no1,no2)==1
+        if (map(no1,no2)==1) || (map(no1,no2)==2)
             isInObstacle=1;
             continue;
         end

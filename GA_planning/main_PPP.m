@@ -9,7 +9,7 @@ rng('default')
 rng(noRNG)
 
 %% 载入数据
-data.map=xlsread('data.xlsx',1); %载入Excel中第一个sheet的地图
+data.map=xlsread('data_change.xlsx',1); %载入Excel中第一个sheet的地图
 data.sizeMap=size(data.map);
 
 %% 数据初始化操作
@@ -63,7 +63,7 @@ option.showIter=0;
 %% 算法参数设置 Parameters
 % 基本参数
 option.numAgent=10;        %种群个体数
-option.maxIteration=150;    %最大迭代次数
+option.maxIteration=50;    %最大迭代次数
 %% 遗传算法
 option.p1_GA=0.9;  %选择概率
 option.p2_GA=0.1;  %变异概率
@@ -85,7 +85,7 @@ option.ub=ub;
 %% 初始化种群个体
 %% 使用算法求解
 
-generate_RRT = true;
+generate_RRT = true;  % 是否使用RRT初始化种群
 option.fobj=@aimFcn_PPP; % 初始化函数设置
 x=ones(option.numAgent,option.dim); % [种群数*节点数]的集合
 y=ones(option.numAgent,1); % [种群的适应度]

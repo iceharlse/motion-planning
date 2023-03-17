@@ -168,7 +168,7 @@ if __name__ == '__main__':
     gBest, gLine = 0, []  # 全局最优值、全局最优解，（社会认知部分）
 
     # 其他参数
-    iterMax = 1500  # 迭代次数
+    iterMax = 500  # 迭代次数
     iterI = 1  # 当前迭代次数
     bestfit = []  # 记录每代最优值
 
