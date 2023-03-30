@@ -147,15 +147,15 @@ def draw_path(car_routes, CityCoordinates):
         x.append(x[0])
         y.append(y[0])
         plt.plot(x, y, 'o-', alpha=0.8, linewidth=0.8)
-    plt.xlabel('x')
-    plt.ylabel('y')
+    plt.xticks([])
+    plt.yticks([])
     plt.show()
 
 
 if __name__ == '__main__':
     # 车辆参数
-    CAPACITY = 120  # 车辆最大容量
-    DISTABCE = 250  # 车辆最大行驶距离
+    CAPACITY = 12000  # 车辆最大容量
+    DISTABCE = 25000  # 车辆最大行驶距离
     C0 = 30  # 车辆启动成本
     C1 = 1  # 车辆单位距离行驶成本
 
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     gBest, gLine = 0, []  # 全局最优值、全局最优解，（社会认知部分）
 
     # 其他参数
-    iterMax = 500  # 迭代次数
+    iterMax = 1000  # 迭代次数
     iterI = 1  # 当前迭代次数
     bestfit = []  # 记录每代最优值
 
@@ -207,6 +207,13 @@ if __name__ == '__main__':
         iterI += 1  # 迭代计数加一
 
     print(gLine_car)  # 路径顺序
+    for slist in gLine_car:
+        x, y = [], []
+        for i in slist:
+            Coordinate = Customer[i]
+            x.append(Coordinate[0])
+            y.append(Coordinate[1])
+        print((x[:],y[:]))
     draw_path(gLine_car, Customer)  # 画路径图
     plt.plot(plot_x, plot_y, 'b--', alpha=0.5, linewidth=1, label='value_min')  # 'bo-'表示蓝色实线
     plt.legend()  # 显示上面的label

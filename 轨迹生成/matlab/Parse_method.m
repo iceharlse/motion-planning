@@ -1,5 +1,7 @@
 clc;clear;close all;
 path = ginput() * 100.0;
+% path = [3,3;98,85;3,3];
+% path = [3,3;2,24;5,42;1,65;3,82;19,97;50,93;29,89;20,70;14,47;3,3];
 
 n_order = 7;
 n_seg = size(path, 1) - 1;

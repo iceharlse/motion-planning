@@ -63,15 +63,26 @@ function [bestY,bestX,recording]=GA(x,y,option,data)
         x_p(i,:)=checkX(x_p(i,:),option,data);
  
         % 给最差适应度一点专家策略
-        if mod(iter, 5) == 0
+        if mod(iter, 10) == 0
             [~,find_fit] = max(y_p(:));
             find_fit = find_fit(1);
             x_p(find_fit,:) = RRT_initial(x_p(find_fit,:),option,data);
         end
         
+        % 使用狼群策略给最差适应度加入专家策略
+        if mod(iter, 5) == 0
+            y_wolf = y_p;
+            [~,min_index] = sort(y_wolf(:));
+            min_index = min_index(1:3); %找到前三适宜度
+            [~,find_fit] = max(y_p(:)); %找到最差适宜度
+            find_fit = find_fit(1);
+            x_p(find_fit,:) = 0.1 * (x_p(min_index(1),:) + x_p(min_index(2),:) + x_p(min_index(3),:)) / 3 + x_p(find_fit,:);
+        end
+        
         %% 更新记录
         recording.bestFit(1+iter)=y_g;
         recording.meanFit(1+iter)=mean(y_p);
+%         disp(['已经完成',num2str(iter),'次迭代']);
     end
     bestY=y_g;
     bestX=x_g;

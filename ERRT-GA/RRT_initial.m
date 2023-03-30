@@ -68,17 +68,20 @@ function new_x = RRT_initial(x,option,data)
     % 得到这个种群的路径
     index = T.v(end).indPrev;
     path_i = 0;
+    path = [];
     while T.v(index).index ~= data.noS
         path_i = path_i + 1;
         path(path_i) = T.v(index).index;
         index = T.v(index).indPrev;
     end
     
-    % 改变x
-    for i = 1:size(path)
-        position = find(data.net(:,1)==path(i)); %得到所有以路径点为起点的边的引索
-        new_x(position) = new_x(position) + 0.1; % 将所有的边的权重加上0.1
-        new_x = checkX(new_x,option,data); %判断是否超过决策变量上限
+    if ~isempty(path)
+        % 改变x
+        for i = 1:size(path)
+            position = find(data.net(:,1)==path(i)); %得到所有以路径点为起点的边的引索
+            new_x(position) = new_x(position) + 0.1; % 将所有的边的权重加上0.1
+            new_x = checkX(new_x,option,data); %判断是否超过决策变量上限
+        end
     end
     
         

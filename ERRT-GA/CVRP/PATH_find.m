@@ -1,7 +1,7 @@
 function [data,result] = PATH_find(S,E,data0)
 
     %% 固定随机数种子
-    noRNG=3;
+    noRNG=1;
     rng('default')
     rng(noRNG)
 
@@ -20,15 +20,15 @@ function [data,result] = PATH_find(S,E,data0)
     data.D1=pdist2(data.node,data.E);  % 求出所有点和终点之间的距离
 
     % 这他妈是个负优化
-    % for i=1:length(data.node(:,1))
-    %     Point1=data.node(i,:);
-    %     Point2=data.E;
-    %     if ~ismember(Point1,Point2,'rows') %将每行视作一个整体，判断Point1不是终点就继续
-    %         if checkIfinObstacle(data.map,Point1,Point2) % 判断与目标点的连线是否碰到障碍物
-    %             data.D1(i)=data.D1(i)*2; % 碰到就*2，已经是一个比较大的惩罚了。
-    %         end
-    %     end
-    % end
+%     for i=1:length(data.node(:,1))
+%         Point1=data.node(i,:);
+%         Point2=data.E;
+%         if ~ismember(Point1,Point2,'rows') %将每行视作一个整体，判断Point1不是终点就继续
+%             if checkIfinObstacle(data.map,Point1,Point2) % 判断与目标点的连线是否碰到障碍物
+%                 data.D1(i)=data.D1(i)*2; % 碰到就*2，已经是一个比较大的惩罚了。
+%             end
+%         end
+%     end
 
     [p1,p2]=find(data.D<=sqrt(2)); % 找到每个点的邻居，有8个方向
     index=sub2ind([length(data.node(:,1)),length(data.node(:,1))],p1,p2); % sub2ind是将坐标变为一维引索
@@ -51,8 +51,8 @@ function [data,result] = PATH_find(S,E,data0)
     option.showIter=0;
     %% 算法参数设置 Parameters
     % 基本参数
-    option.numAgent=10;        %种群个体数
-    option.maxIteration=50;    %最大迭代次数
+    option.numAgent=20;        %种群个体数
+    option.maxIteration=1000;    %最大迭代次数
     %% 遗传算法
     option.p1_GA=0.9;  %选择概率
     option.p2_GA=0.1;  %变异概率
@@ -93,18 +93,7 @@ function [data,result] = PATH_find(S,E,data0)
         tic
         [bestY(ii,:),bestX(ii,:),recording{ii}]=selectedAlgorithm{ii}(x,y,option,data);
     end
-    %%
-    figure
-    hold on
-    for i=1:length(recording)
-        plot(recording{i}.bestFit,'LineWidth',2)
-    end
-    for i=1:length(recording)
-        plot(recording{i}.meanFit,'LineWidth',2)
-    end
-    legend(str_legend)
-    xlabel('t')
-    ylabel('目标')
+
     %%
     rng(1)
     option.fobj=@aimFcn_PPP;

@@ -6,13 +6,16 @@ hold on
 for i=1:length(p1)
     rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','k');
 end
-[p1,p2]=find(data.map==0);
-for i=1:length(p1)
-    rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','w');
-end
-plot(data.node(result.path,1),data.node(result.path,2),'LineWidth',2)
+% [p1,p2]=find(data.map==0);
+% for i=1:length(p1)
+%     rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','w');
+% end
+plot(data.node(result.path,1),data.node(result.path,2),'LineWidth',2,'linestyle','--')
 title([str,',fit£º',num2str(result.fit)]);
 axis([0.5,0.5+data.sizeMap(1),0.5,0.5+data.sizeMap(2)])
+box on
+xticks([])
+yticks([])
 
 %% Æ½»¬
 newPath=data.node(result.path,1:2);
@@ -53,13 +56,17 @@ end
 for i=1:length(p1)
     rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','k');
 end
-[p1,p2]=find(data.map==0);
-for i=1:length(p1)
-    rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','w');
-end
-plot(data.node(result.path,1),data.node(result.path,2),'LineWidth',2)
+% [p1,p2]=find(data.map==0);
+% for i=1:length(p1)
+%     rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','w');
+% end
+plot(data.node(result.path,1),data.node(result.path,2),'LineWidth',2,'linestyle','--')
 plot(xi,yi,'LineWidth',2)
 title([str,',fit£º',num2str(result.fit)]);
 axis([0.5,0.5+data.sizeMap(1),0.5,0.5+data.sizeMap(2)])
+legend('Straight path','Smooth trajectory')
+box on
+xticks([])
+yticks([])
 toc
 end

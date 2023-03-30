@@ -1,9 +1,11 @@
-function CVRP_draw(result,data,str)
+function CVRP_draw(S,result,data,str)
 
 x_all = [];
 y_all = [];
+result_all = 0;
 for j = 1:size(result,2)
     %% ∆Ωª¨
+    result_all = result_all + result(j).fit;
     newPath=data.node(result(j).path,1:2);
     x = newPath(:,1);% ≥ı ºªØ
     y = newPath(:,2);
@@ -47,11 +49,19 @@ end
 for i=1:length(p1)
     rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','k');
 end
-[p1,p2]=find(data.map==0);
-for i=1:length(p1)
-    rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','w');
-end
+% [p1,p2]=find(data.map==0);
+% for i=1:length(p1)
+%     rectangle('Position',[p1(i)-0.5,p2(i)-0.5,1,1],'FaceColor','w');
+% end
 plot(x_all,y_all,'LineWidth',2)
 axis([0.5,0.5+data.sizeMap(1),0.5,0.5+data.sizeMap(2)])
+plot(S(1,1),S(1,2),'ro','MarkerFaceColor','g');
+for i = 2:size(S,1)
+    plot(S(i,1),S(i,2),'ro','MarkerFaceColor','r');
+end
+% title([str,',fit£∫',num2str(result_all)]);
+box on
+xticks([])
+yticks([])
 toc
 end

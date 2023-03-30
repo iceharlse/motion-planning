@@ -4,12 +4,12 @@ close all;
 warning off
 
 %% 固定随机数种子
-noRNG=3;
+noRNG=4;
 rng('default')
 rng(noRNG)
 
 %% 载入数据
-data.map=xlsread('data_change.xlsx',1); %载入Excel中第一个sheet的地图
+data.map=xlsread('data.xlsx',1); %载入Excel中第一个sheet的地图
 data.sizeMap=size(data.map);
 
 %% 数据初始化操作
@@ -30,7 +30,7 @@ data.noE=find(p1==data.E(1) & p2==data.E(2));
 data.D=pdist2(data.node,data.node); % 求出所有点之间的距离，返回为n*n的链接矩阵
 data.D1=pdist2(data.node,data.E);  % 求出所有点和终点之间的距离
 
-% 这他妈是个负优化
+% %这他妈是个负优化
 % for i=1:length(data.node(:,1))
 %     Point1=data.node(i,:);
 %     Point2=data.E;
@@ -62,8 +62,8 @@ end
 option.showIter=0;
 %% 算法参数设置 Parameters
 % 基本参数
-option.numAgent=10;        %种群个体数
-option.maxIteration=50;    %最大迭代次数
+option.numAgent=50;        %种群个体数
+option.maxIteration=100;    %最大迭代次数
 %% 遗传算法
 option.p1_GA=0.9;  %选择概率
 option.p2_GA=0.1;  %变异概率
@@ -72,8 +72,8 @@ option.w_pso=1.5;  %惯性系数
 option.c1_pso=1;   %个人期望系数
 option.c2_pso=1;   %公共期望系数
 
-str_legend=[{'GA'}];
-selectedAlgorithm=[{@GA_change}];
+str_legend=[{'GA-RRT'},{'IGA-RRT'},{'ERRT-GA'}];
+selectedAlgorithm=[{@GA},{@IGA},{@GA_change}];
 
 option.dim=dim;
 option.gap0=ceil(sqrt(option.maxIteration*2))+1;
@@ -98,11 +98,11 @@ for i=1:option.numAgent  %初始化种群
     end
     y(i)=option.fobj(x(i,:),option,data); % 获得适应度
 end
-
 for ii=1:length(selectedAlgorithm)
     rng(noRNG)
     tic
     [bestY(ii,:),bestX(ii,:),recording{ii}]=selectedAlgorithm{ii}(x,y,option,data);
+    toc
 end
 %%
 figure
@@ -111,16 +111,16 @@ for i=1:length(recording)
     plot(recording{i}.bestFit,'LineWidth',2)
 end
 for i=1:length(recording)
-    plot(recording{i}.meanFit,'LineWidth',2)
+    plot(recording{i}.meanFit,'--','LineWidth',2)
 end
 legend(str_legend)
-xlabel('t')
-ylabel('目标')
+xlabel('iter times')
+ylabel('fit')
 %%
-rng(1)
-for ii=1:length(selectedAlgorithm)
-    option.fobj=@aimFcn_PPP;
-    str=str_legend{ii};
-    [fit(ii),result(ii)]=option.fobj(bestX(ii,:),option,data);
-    drawPc_PPP(result(ii),option,data,str)
-end
+% rng(1)
+% for ii=1:length(selectedAlgorithm)
+%     option.fobj=@aimFcn_PPP;
+%     str=str_legend{ii};
+%     [fit(ii),result(ii)]=option.fobj(bestX(ii,:),option,data);
+%     drawPc_PPP(result(ii),option,data,str)
+% end
